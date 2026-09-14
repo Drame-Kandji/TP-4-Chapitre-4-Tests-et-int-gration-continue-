@@ -3,8 +3,6 @@ Chaque vue a une seule responsabilité : parler HTTP (lire la requête,
 rediriger, choisir un template). Validation, tarification et persistance
 sont délégués à RendezVousForm et RendezVousService (SRP, chapitre 2).
 """
-import os
-
 from django.contrib import messages
 from django.shortcuts import redirect, render
 
@@ -33,7 +31,9 @@ def prendre_rendez_vous(request):
             notes=form.cleaned_data["notes"],
         )
 
-        messages.success(request, f"Rendez-vous confirmé - {rendez_vous.prix} FCFA")
+        messages.success(
+            request, f"Rendez-vous confirmé - {rendez_vous.prix} FCFA"
+        )
         return redirect("rendezvous:prendre")
 
     patients = Patient.objects.all()
@@ -47,4 +47,6 @@ def prendre_rendez_vous(request):
 def facture_patient(request, patient_id):
     patient = Patient.objects.get(id=patient_id)
     total = _service.facturer_patient(patient)
-    return render(request, "rendezvous/facture.html", {"patient": patient, "total": total})
+    return render(
+        request, "rendezvous/facture.html", {"patient": patient, "total": total}
+    )
